@@ -226,6 +226,7 @@ function resolveAssetPaths(options, to, filePath) {
 }
 
 function processUrlRebase(dirname, url, to, options) {
+
 	var urlPostfix = getPostfix(url);
 	var clearUrl = getClearUrl(url);
 
@@ -235,7 +236,7 @@ function processUrlRebase(dirname, url, to, options) {
 	var resolvedPaths = resolveAssetPaths(options, to, filePath);
 
 	if (!assetContents) {
-		return composeUrl(url);
+		return normalizeUrl(url);
 	}
 
 	if (options.renameDuplicates) {
@@ -248,5 +249,5 @@ function processUrlRebase(dirname, url, to, options) {
 	);
 	copyAsset(resolvedPaths.absolute, assetContents);
 
-	return composeUrl(resolvedPaths.relative, urlPostfix);
+	return normalizeUrl(resolvedPaths.relative) + urlPostfix;
 }
