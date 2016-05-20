@@ -46,7 +46,6 @@ function getInstances(css, options) {
 
 		var dirname = process.cwd();
 		if (
-			options.relative &&
 			decl.source &&
 			decl.source.input &&
 			decl.source.input.file
@@ -207,7 +206,7 @@ function resolvePathDuplication(filePath, resolvedPaths) {
 function resolveAssetPaths(options, to, filePath) {
 
 	var fileName = path.basename(filePath);
-	var keptPath =  path.relative(process.cwd(),path.dirname(filePath));
+	var keptPath =  path.relative(process.cwd(), path.dirname(filePath));
 	var relativeAssetPath = '';
 	var absoluteAssetPath = '.';
 
