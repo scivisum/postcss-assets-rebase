@@ -211,14 +211,9 @@ function resolveAssetPaths(options, to, filePath) {
 	var relativeAssetPath = '';
 	var absoluteAssetPath = '.';
 
-	if (options.relative) {
-		absoluteAssetPath = path.resolve(to, options.assetsPath);
-		relativeAssetPath = options.assetsPath;
-	} else {
-		absoluteAssetPath = path.resolve(options.assetsPath);
-		relativeAssetPath = path.relative(to, absoluteAssetPath);
-	}
-	
+	absoluteAssetPath = path.resolve(options.assetsPath);
+	relativeAssetPath = options.assetsPath;
+
 	if (options.keepStructure) {
 		absoluteAssetPath = path.join(absoluteAssetPath, keptPath);
 		relativeAssetPath = path.join(relativeAssetPath, keptPath);
@@ -226,11 +221,11 @@ function resolveAssetPaths(options, to, filePath) {
 
 	return {
 		absolute: path.join(absoluteAssetPath, fileName),
-		relative: path.join(relativeAssetPath, fileName)
+		relative: path.join("/", relativeAssetPath, fileName)
 	}
 }
-function processUrlRebase(dirname, url, to, options) {
 
+function processUrlRebase(dirname, url, to, options) {
 	var urlPostfix = getPostfix(url);
 	var clearUrl = getClearUrl(url);
 
@@ -240,14 +235,18 @@ function processUrlRebase(dirname, url, to, options) {
 	var resolvedPaths = resolveAssetPaths(options, to, filePath);
 
 	if (!assetContents) {
-		return normalizeUrl(url);
+		return composeUrl(url);
 	}
 
 	if (options.renameDuplicates) {
 		resolvedPaths = resolvePathDuplication(filePath, resolvedPaths);
 	}
-
+	console.log(
+		"\nPostCSS: rebasing CSS file at '" + dirname + "' containing URL '" + url +
+		"': copying to '" + resolvedPaths.absolute + "' and rebasing URL to '" +
+		resolvedPaths.relative +"'"
+	);
 	copyAsset(resolvedPaths.absolute, assetContents);
 
-	return normalizeUrl(resolvedPaths.relative) + urlPostfix;
+	return composeUrl(resolvedPaths.relative, urlPostfix);
 }
